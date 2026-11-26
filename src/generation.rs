@@ -1,4 +1,4 @@
-use super::encoding;
+use super::encoding::{decode, encode};
 use rand::RngExt;
 use std::num::NonZeroU64;
 
@@ -12,7 +12,7 @@ impl ShortUID {
 
     const LETTERS_COUNT: usize = 5;
     const LETTERS_BASE: u64 = 26;
-    const LETTERS_SPACE: u64 = 11_881_376; // 26^5
+    // const LETTERS_SPACE: u64 = 11_881_376; // 26^5
 
     pub fn new() -> Self {
         let mut rng = rand::rng();
@@ -24,10 +24,7 @@ impl ShortUID {
             n * Self::LETTERS_BASE + rng.random_range(0..Self::LETTERS_BASE)
         });
 
-        let numeric = (number - 1) * Self::SUFFIX_MAX + (suffix - 1);
-        let encoded = numeric * Self::LETTERS_SPACE + letters;
-
-        Self(NonZeroU64::new(encoded + 1).unwrap())
+        Self(NonZeroU64::new(encode(number, suffix, letters)).unwrap())
     }
 
     pub fn validate(value: &str) -> Option<Self> {
@@ -60,11 +57,9 @@ impl ShortUID {
             return None;
         }
 
-        let numeric = (number - 1) * Self::SUFFIX_MAX + (suffix - 1);
-
-        let encoded = numeric * Self::LETTERS_SPACE + letters;
-
-        Some(Self(NonZeroU64::new(encoded + 1)?))
+        Some(Self(
+            NonZeroU64::new(encode(number, suffix, letters)).unwrap(),
+        ))
     }
     pub fn as_u64(&self) -> u64 {
         self.0.get()
@@ -75,10 +70,10 @@ impl ShortUID {
     }
 
     pub fn number(&self) -> i32 {
-        -(encoding::decode(self.0.get()).0 as i32)
+        -(decode(self.0.get()).0 as i32)
     }
 
     pub fn suffix(&self) -> i8 {
-        -(encoding::decode(self.0.get()).1 as i8)
+        -(decode(self.0.get()).1 as i8)
     }
 }
