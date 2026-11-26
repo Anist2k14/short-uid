@@ -1,0 +1,4 @@
+- [ ] Validate bit-field boundaries and prevent overflow
+- [ ] Benchmark bitwise encoding against mixed-radix encoding
+- [ ] Benchmark ShortUID generation against UUID v4
+- [ ] Evaluate cryptographically secure random number generation (CSPRNG)

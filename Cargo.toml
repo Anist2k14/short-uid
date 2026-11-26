@@ -1,0 +1,13 @@
+[package]
+name = "short-uid"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+description = "Compact 64-bit identifiers with human-readable encoding."
+readme = "README.md"
+
+[dependencies]
+rand = "0.10.4"
+
+[dev-dependencies]
+uuid = { version = "1", features = ["v4"] }
