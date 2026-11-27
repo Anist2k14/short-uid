@@ -7,8 +7,7 @@ use std::num::NonZeroU64;
 pub struct ShortUID(NonZeroU64);
 
 impl ShortUID {
-    const NUMBER_MAX: u64 = 999_999_999;
-    const SUFFIX_MAX: u64 = 99;
+    const NUMBER_MAX: u64 = 99_999_999_999;
 
     const LETTERS_COUNT: usize = 5;
     const LETTERS_BASE: u64 = 26;
@@ -18,13 +17,12 @@ impl ShortUID {
         let mut rng = rand::rng();
 
         let number = rng.random_range(1..=Self::NUMBER_MAX);
-        let suffix = rng.random_range(1..=Self::SUFFIX_MAX);
 
         let letters = (0..Self::LETTERS_COUNT).fold(0_u64, |n, _| {
             n * Self::LETTERS_BASE + rng.random_range(0..Self::LETTERS_BASE)
         });
 
-        Self(NonZeroU64::new(encode(number, suffix, letters)).unwrap())
+        Self(NonZeroU64::new(encode(number, letters)).unwrap())
     }
 
     pub fn validate(value: &str) -> Option<Self> {
@@ -47,8 +45,6 @@ impl ShortUID {
             .iter()
             .fold(0_u64, |n, &d| n * 10 + (d - b'0') as u64);
 
-        let suffix = ((b[16] - b'0') as u64) * 10 + (b[17] - b'0') as u64;
-
         let letters = [b[2], b[3], b[4], b[10], b[11]]
             .iter()
             .fold(0_u64, |n, &c| n * 26 + (c - b'a') as u64);
@@ -58,7 +54,7 @@ impl ShortUID {
         }
 
         Some(Self(
-            NonZeroU64::new(encode(number, suffix, letters)).unwrap(),
+            NonZeroU64::new(encode(number, letters)).unwrap(),
         ))
     }
     pub fn as_u64(&self) -> u64 {
@@ -71,9 +67,5 @@ impl ShortUID {
 
     pub fn number(&self) -> i32 {
         -(decode(self.0.get()).0 as i32)
-    }
-
-    pub fn suffix(&self) -> i8 {
-        -(decode(self.0.get()).1 as i8)
     }
 }
