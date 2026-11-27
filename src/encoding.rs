@@ -8,7 +8,7 @@ pub(super) fn encode(number: u64, letters: u64) -> u64 {
 }
 
 pub(super) fn decode(value: u64) -> (u64, u64) {
-    let letters = value & ((1 << LETTERS_BITS) - 1);
+    let letters = value & ((1 << (u64::BITS - NUMBER_BITS)) - 1);
 
     let number = value >> (u64::BITS - NUMBER_BITS);
 

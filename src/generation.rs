@@ -49,7 +49,7 @@ impl ShortUID {
             .iter()
             .fold(0_u64, |n, &c| n * 26 + (c - b'a') as u64);
 
-        if number == 0 || suffix == 0 {
+        if number == 0 {
             return None;
         }
 
@@ -65,7 +65,7 @@ impl ShortUID {
         self.0.get().to_be_bytes()
     }
 
-    pub fn number(&self) -> i32 {
-        -(decode(self.0.get()).0 as i32)
+    pub fn number(&self) -> i64 {
+        -(decode(self.0.get()).0 as i64)
     }
 }
