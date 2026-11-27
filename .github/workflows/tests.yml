@@ -1,0 +1,23 @@
+name: Preprod test
+
+on:
+  push:
+    branches: [ "pre-prod" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Build
+      run: cargo build --release --verbose
+      
+    - name: Run tests
+      run: cargo test --verbose
